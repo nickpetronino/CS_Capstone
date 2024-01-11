@@ -1,0 +1,2 @@
+# README file
+Click on `main` in the dropdown above in order to switch branch from `main` to `branch1`.  Then click on the edit (pencil) icon above and enter a somewhat detailed description of your project here.  Use [Markdown](https://docs.github.com/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax) to format your description. When complete, click the `Commit Changes` button at the bottom of the edit window.
