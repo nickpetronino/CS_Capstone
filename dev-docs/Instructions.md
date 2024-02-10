@@ -11,7 +11,6 @@ git clone https://github.com/Duquesne-Spring-2024-COSC-481/Nicholas-Petronino.gi
 ## Install Jest for testing and JSDoc for documentation
 ```
 npm install -g jest
-npm install -g jsdoc
 ```
 
 # Running the server
