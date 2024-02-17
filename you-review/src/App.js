@@ -6,16 +6,17 @@ import { Navbar, Container } from 'react-bootstrap';
 function App() {
   return (
     <div className="App">
-      <Navbar className="bg-body-tertiary">
-        <Container className='App-nav'>
+      <Navbar bg='dark' data-bs-theme='dark' className="bg-body-tertiary">
+        <Container>
           <Navbar.Brand href="#home">
             <img
+              alt=""
               src={logo}
               width="30"
               height="30"
               className="d-inline-block align-top"
-              alt="React Bootstrap logo"
-            />
+            />{' '}
+            You Review
           </Navbar.Brand>
         </Container>
       </Navbar>

@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import AlbumList from "./AlbumList";
 
 export default function SearchBar() {
   const [searchString, setSearchString] = useState()
+  const [albums, setAlbums] = useState()
+  console.log('Default')
 
-  const search = async () => {
+  const search = async (e) => {
+    e.preventDefault()
+    console.log("Searching for blah");
     const request = { searchString }
     const result = await (await fetch('http://localhost:3001/search', {
         mode: 'cors',
@@ -13,6 +18,7 @@ export default function SearchBar() {
         body: JSON.stringify(request)
     })).json();
     console.log("Result: " , result)
+    setAlbums(result)
 }
   return (
     <Container className="mt-5" style={{
@@ -35,6 +41,7 @@ export default function SearchBar() {
           </Form>
         </Col>
       </Row>
+      <AlbumList albums={albums}></AlbumList>
     </Container>
   );
 }

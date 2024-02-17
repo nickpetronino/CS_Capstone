@@ -2,12 +2,49 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const fs = require('fs');
-//const { response } = require('./app');
-
 app.use(express.json());
 app.use(cors());
-
 const PORT = process.env.PORT || 3001;
+const clientID = '61fb022f838c48d5bdf9a91490e6f320';
+const clientSecret = '6eb233f414f947949a95297dc77c3c63';
+let token;
+
+async function getToken() {
+    const response = await fetch('https://accounts.spotify.com/api/token', {
+        method: 'POST',
+        body: new URLSearchParams({
+            'grant_type': 'client_credentials',
+        }),
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': 'Basic ' + (Buffer.from(clientID + ':' + clientSecret).toString('base64')),
+        },
+    });
+    const rv = await response.json()
+    token = rv.access_token
+    console.log('rv:', rv)
+    return rv
+}
+
+
+getToken()
+
+
+const albumSearch = async (searchString) => {
+    const searchOptions = {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+    try {
+        const data = await (await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(searchString)}&type=album&limit=10`, searchOptions)).json()
+        return data;
+    } catch (error) {
+        console.error('Error fetching access token:', error);
+    }
+}
+
 
 app.listen(PORT, () => {
     console.log("Server Listening on PORT:", PORT);
@@ -21,79 +58,14 @@ app.get('/status', (request, response) => {
     response.send(status);
 });
 
-app.post('/search', (request, response) => {
-    console.log(request.body.searchString)
-});
-
-app.get('/list-files', (request, response) => {
-    const rv = []
-    const files = fs.readdirSync(__dirname + '/repo')
-    files.forEach(file => {
-        const stats = fs.statSync(__dirname + '/repo/' + file)
-        rv.push({
-            name: file,
-            size: stats.size,
-            modTime: stats.mtime
-        })
+app.post('/search', async (request, response) => {
+    const userInput = request.body.searchString;
+    console.log('User String:', userInput)
+    const result = await (albumSearch(userInput))
+    console.log(result)
+    const rv = result.albums.items.map(({id, name, total_tracks, artists}) => {
+        return {id, name, total_tracks, artists:artists.map(artist => artist.name).join(', ')}
     })
-    console.log('rv = ', rv)
+    //response.send(JSON.stringify(result, undefined, 4))
     response.send(rv)
-})
-
-app.post('/create-file', async (request, response) => {
-    const courseTitle = request.body.courseTitle
-    const chapterDescription = request.body.chapterDescription
-    const chapterTitle = request.body.chapterTitle
-    const fileName = __dirname + '/repo/' + courseTitle + "-" + chapterTitle + ".json";
-
-    console.log("Course Title = ", request.body.courseTitle);
-
-    const fileBody = {
-        courseTitle,
-        chapterTitle,
-        chapterDescription,
-        notes: []
-
-    }
-    //TODO: CHECK FOR FILE EXISTENCE 
-    fs.writeFileSync(fileName, JSON.stringify(fileBody))
-    response.send({ "Status": "File Created" })
-})
-
-app.post('/create-note', async (request, response) => {
-    const fileName = request.body.file.name
-    const studentID = request.body.studentID                                         //How to set this to user login?
-    const time = Date.now();
-    const noteTitle = request.body.noteTitle
-    const note = request.body.note
-    // const fileName = __dirname + '/repo/' + courseTitle + "-" + chapterTitle + ".json"; //Check this line? How to we want to write this into the actual file.
-    console.log("Course Title = ", request.body.courseTitle);
-
-    const fn = __dirname + '/repo/' + fileName;
-    const contents = JSON.parse(fs.readFileSync(fn));
-    
-
-    //Based off fileBody{} from above, just now with these variables?
-    const noteBody = {
-        
-        studentID,
-        time,
-        noteTitle,
-        note
-    }
-    //TODO: CHECK FOR FILE EXISTENCE 
-    contents.notes.push(noteBody)
-    fs.writeFileSync(fn, JSON.stringify(contents))
-    response.send({ "Status": "Note Added" })
-})
-
-app.post('/read-file', (request, response) => {
-    const courseTitle = request.body.courseTitle
-    const chapterTitle = request.body.chapterTitle
-    const fileName = __dirname + '/repo/' + request.body.name;
-    const contents = fs.readFileSync(fileName)
-
-    console.log(contents)
-
-    response.send(contents)
-})
+});
