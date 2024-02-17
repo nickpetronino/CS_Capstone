@@ -26,7 +26,6 @@ async function getToken() {
     return rv
 }
 
-
 getToken()
 
 

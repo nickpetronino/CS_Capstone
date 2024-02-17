@@ -13,7 +13,7 @@ export default function AlbumList(props) {
                 as="li"
                 className="d-flex justify-content-between align-items-start"
             >
-                <div className="ms-2 me-auto">
+                <div className="ms-2 me-auto" align='left'>
                     <div className="fw-bold">{album.name}</div>
                     {album.artists}
                 </div>
