@@ -69,16 +69,3 @@
 9. **Review Presentation:**
    - Frontend displays user reviews and ratings for each song.
 
-## Security Considerations
-
-- Secure storage and handling of Spotify API credentials.
-- Proper validation of user input to prevent security vulnerabilities.
-- Secure transmission of data between frontend and backend using HTTPS.
-- Secure storage of user reviews and ratings.
-
-## Future Improvements
-
-- Implement user authentication for personalized features.
-- Enhance the user interface for seamless song exploration and review.
-- Implement caching mechanisms for frequently requested data.
-- Explore integration with additional Spotify API features for a richer user experience.
