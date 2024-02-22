@@ -26,7 +26,7 @@ async function getToken() {
             'Authorization': 'Basic ' + (Buffer.from(clientID + ':' + clientSecret).toString('base64')),
         },
     });
-    const rv = await response.json(); 
+    const rv = await response.json();
     token = rv.access_token; // Set the obtained access token for future API requests.
 }
 
@@ -95,23 +95,13 @@ const getAlbumDetails = async (albumId) => {
     }
 };
 
-/**
- * Listens on the specified port.
-*
-* @param {number} PORT - The port number on which the server should listen.
-* @returns {void}
-*/
+
+// Listens on the specified port.
 app.listen(PORT, () => {
     console.log("Server Listening on PORT:", PORT);
 });
 
-/**
- * Express route handler for the '/status' endpoint.
- *
- * @param {Object} request - The Express request object. [NOT IN USE]
- * @param {Object} response - The Express response object.
- * @returns {void}
- */
+// Status of the server. Can be checked at localhost:3001/status
 app.get('/status', (request, response) => {
     const status = {
         "Status": "Running"
@@ -120,17 +110,15 @@ app.get('/status', (request, response) => {
     response.send(status);
 });
 
-/**
- * Express route handler for the '/search' POST endpoint.
- * @param {Object} request - The Express request object containing user input in the request body.
- * @param {Object} response - The Express response object to send the search results.
- * @returns {void}
- * @description
- * This route handler is responsible for handling POST requests to the '/search' endpoint. It extracts user input from the request body, performs an asynchronous search using the `albumSearch` function, and transforms the search results to provide a structured response. The response includes album details such as ID, name, total tracks, release date (year only), artists, and the album cover URL (for use displaying cover art). The transformed album data is sent as a JSON response using the Express `response.send` method.
- */
+/* /search endpoint:
+This route handler is responsible for handling POST requests to the '/search' endpoint.
+It extracts user input from the request body, performs an asynchronous search using the `albumSearch` function, and transforms the search results to provide a structured response.
+The response includes album details such as ID, name, total tracks, release date (year only), artists, and the album cover URL (for use displaying cover art).
+The transformed album data is sent as a JSON response using the Express `response.send` method.
+*/
 app.post('/search', async (request, response) => {
     const userInput = request.body.searchString;    // Extract the user input from the request body.
-    const result = await albumSearch(userInput); 
+    const result = await albumSearch(userInput);
     const { albums: { items = [] } = {} } = result; // Destructure the albums' items from the search result with default value to prevent errors while iterating over an array.
     // Map and transform album data for the response.
     const rv = items.map(({ id, name, total_tracks, release_date, artists, images }) => {
@@ -147,17 +135,13 @@ app.post('/search', async (request, response) => {
 });
 
 
-/**
- * Express route handler for the '/album/:id' GET endpoint.
- * Retrieves and sends details of a specific album, including its tracks.
- * @param {Object} request - The Express request object containing the album ID as a parameter.
- * @param {Object} response - The Express response object to send the album details.
- * @returns {void}
- * @description
- * This route handler is responsible for handling GET requests to the '/album/:id' endpoint. It extracts the album ID from the request parameters and calls the asynchronous function `getAlbumDetails` to fetch an albums tracks. The obtained album details are then sent as a JSON response to the client.
- */
+/*
+This route handler is responsible for handling GET requests to the '/album/:id' endpoint.
+It extracts the album ID from the request parameters and calls the asynchronous function `getAlbumDetails` to fetch an albums tracks.
+The obtained album details are then sent as a JSON response to the client.
+*/
 app.get('/album/:id', async (request, response) => {
     const albumId = request.params.id;  // Extract the album ID from the request parameters.
-    const albumDetails = await getAlbumDetails(albumId); 
-    response.send(albumDetails); 
+    const albumDetails = await getAlbumDetails(albumId);
+    response.send(albumDetails);
 });
