@@ -38,5 +38,3 @@ export default function AlbumList(props) {
         </ListGroup>
     );
 }
-
-////<Link to={`/album/${album.id}`} key={album.id} style={{ textDecoration: 'none' }}>
