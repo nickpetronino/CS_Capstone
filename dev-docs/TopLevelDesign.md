@@ -30,8 +30,6 @@ This is a client-server application for searching and reviewing albums. The user
 
 - **User Review Endpoint:** Manages user reviews and ratings for songs.
 
-### 3. Spotify API
-
 - **Search Endpoint:** Accepts requests for searching albums based on user input.
 
 - **Album Details Endpoint:** Provides detailed information about a specific album, including the list of songs.
