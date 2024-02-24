@@ -2,7 +2,7 @@
 
 ## TL;DR
 
-This is a client-server application for searching and reviewing albums. The user inputs their search queries through a client interface search. The client then sends these queries to a server. The server communicates with the Spotify API to execute the searches. The server receives the API's responses and relays the relevant information back to the client. This architecture allows users tosearch for albums on Spotify without the need for direct interaction with the Spotify API, making the process more user-friendly and centralized.
+This is a client-server application for searching and reviewing albums. The user inputs their search queries through a client interface search. The client then sends these queries to a server. The server communicates with the Spotify API to execute the searches. The server receives the API's responses and relays the relevant information back to the client. This architecture allows users to search for albums on Spotify without the need for direct interaction with the Spotify API, making the process more user-friendly and centralized. Users will then be able to create reviews of these albums via the client, save these reviews to a database and be shown stats of these reviews.
 
 ## Components
 
