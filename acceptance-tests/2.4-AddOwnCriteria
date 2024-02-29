@@ -1,0 +1,32 @@
+## 2.4 As a user, I want to add my own review criteria.
+
+### Normal Case:
+
+1. **Given** the user is on the album's review page.
+2. **And** there is an option to add custom review criteria.
+3. **When** the user clicks on the "Add Criteria" button.
+4. **Then** a form or dialog should appear allowing the user to enter the name and details of the new criteria.
+5. **And** the user submits the form.
+6. **Then** the new custom criteria should be added to the list of review criteria for the album.
+7. **And** the user's review should be updated to include the new criteria.
+8. **And** the changes should be immediately reflected without the need for a page refresh.
+
+### Error Case - Adding Criteria with Blank Name:
+
+1. **Given** the user is on the album's review page.
+2. **And** there is an option to add custom review criteria.
+3. **When** the user clicks on the "Add Criteria" button.
+4. **And** the user submits the form with a blank name for the criteria.
+5. **Then** an error message should be displayed, indicating that the name cannot be blank.
+6. **And** the new criteria should not be added.
+
+### Error Case - Adding Criteria with Duplicate Name:
+
+1. **Given** the user is on the album's review page.
+2. **And** there is an option to add custom review criteria.
+3. **And** the user has already added a criteria with a specific name.
+4. **When** the user clicks on the "Add Criteria" button.
+5. **And** enters the same name for the new criteria.
+6. **And** submits the form.
+7. **Then** an error message should be displayed, indicating that a criteria with the same name already exists.
+8. **And** the new criteria should not be added.
