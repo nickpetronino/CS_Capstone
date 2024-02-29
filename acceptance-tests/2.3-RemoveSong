@@ -1,6 +1,6 @@
 ## 2.3 As a user, I want to remove songs from my review.
 
-### User Acceptance Test: Removing Songs from Review - Normal Case
+### User Acceptance Test: Normal Case
 
 1. **Given** the user is viewing their album review.
 2. **And** there is a red "remove" icon next to each song in the review.
@@ -9,7 +9,7 @@
 5. **And** the changes should be immediately reflected without the need for a page refresh.
 6. **And** the removed song should no longer appear in the review or any saved data.
 
-### User Acceptance Test: Removing Songs from Review - Error Case (Last Song)
+### User Acceptance Test: Error Case (Last Song)
 
 1. **Given** the user is viewing their album review.
 2. **And** there is a red "remove" icon next to each song in the review.
