@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const nedb = require('nedb-promises');
 const app = express();
 const fs = require('fs');
 app.use(express.json());
@@ -9,6 +10,7 @@ const clientID = '61fb022f838c48d5bdf9a91490e6f320';
 const clientSecret = '6eb233f414f947949a95297dc77c3c63';
 let token; // Variable to store the Spotify API access token globally.
 
+const reviews = new nedb({ filename: './database/reviews.nedb', autoload: true })
 
 /**
  * Gets the Spotify API Authroization Token.
@@ -112,6 +114,37 @@ const getAlbumDetails = async (albumId) => {
     }
 };
 
+const saveReview = async (review) => {
+    try {
+        console.log('Review: ', review)
+        await reviews.insert(review)
+        return { saved: true }; // Return the retrieved album details as data.
+    } catch (error) {
+        console.log('############### ERROR #############', error)
+        return { saved: false };
+    }
+}
+
+const getAlbumReviews = async (albumId, rv) => {
+    const docs = await reviews.find({ albumId: albumId })
+    if (docs.length) {
+        docs.forEach(doc => {
+            Object.keys(doc).forEach(song => {
+                if (rv[song]) {
+                    rv[song].lyrics += (doc[song].lyrics || 0) / docs.length
+                    rv[song].vocals += (doc[song].vocals || 0) / docs.length
+                    rv[song].instrumentals += (doc[song].instrumentals || 0) / docs.length
+                    rv[song].meaning += (doc[song].meaning || 0) / docs.length
+                    rv[song].personalOpinion += (doc[song].personalOpinion || 0) / docs.length
+                    console.log('***** JSON STRINGIFY RV[SONG] *****', JSON.stringify(rv[song]))
+                } else {
+                    console.log('Song not found', song)
+                }
+            })
+        })
+    }
+    return rv;
+};
 
 // Listens on the specified port.
 app.listen(PORT, () => {
@@ -162,6 +195,32 @@ app.get('/album/:id', async (request, response) => {
     const albumId = request.params.id;  // Extract the album ID from the request parameters.
     const albumDetails = await getAlbumDetails(albumId);
     response.send(albumDetails);
+});
+
+app.get('/PublicReviews/:id', async (request, response) => {
+    const albumId = request.params.id;  // Extract the album ID from the request parameters.
+    const albumDetails = await getAlbumDetails(albumId);
+    const rv = {}
+    albumDetails.items.forEach(item => {
+        const { id } = item
+        const stars = {
+            lyrics: 0,
+            vocals: 0,
+            instrumentals: 0,
+            meaning: 0,
+            personalOpinion: 0
+        }
+        rv[id] = stars;
+    })
+    response.send(await getAlbumReviews(albumId, rv));
+})
+
+app.post('/saveReview', async (request, response) => {
+    const review = request.body
+    console.log('/saveReview/saveReview/saveReview/saveReview/saveReview', review)
+    const result = await saveReview(review);
+    console.log('result,result,result,result,result', result)
+    response.send(result)
 });
 
 exports.processAlbumSearch = processAlbumSearch;

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./server.js",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -16,6 +16,8 @@
     "jade": "~1.11.0",
     "jsdoc": "^4.0.2",
     "morgan": "~1.9.1",
+    "nedb": "^1.8.0",
+    "nedb-promises": "^6.2.3",
     "node-fetch": "^3.3.2",
     "react-router-dom": "^6.22.1"
   },
