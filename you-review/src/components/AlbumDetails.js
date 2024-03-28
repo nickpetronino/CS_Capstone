@@ -35,7 +35,7 @@ const AlbumDetails = () => {
                 const { items = [] } = data
                 console.log("Item:", items)
                 const albumData = items.map(item => {
-                    const { name, id,  duration_ms, artists = [] } = item
+                    const { name, id, duration_ms, artists = [] } = item
                     const artistList = artists.map(artist => artist.name).join(', ')
                     const d = new Date(duration_ms)
                     const duration = `${d.getMinutes()}:${String(d.getSeconds()).padStart(2, '0')}`
@@ -90,6 +90,10 @@ const AlbumDetails = () => {
         setReview({ ...review })
     }
 
+    /**
+     * Toggles the review mode for the current album.
+     * @returns {Promise<void>} - A promise that resolves once the review mode is toggled.
+     */
     const toggleReviewMode = async () => {
         const review = { albumId: albumList[index].id }
         albumDetails.map(song => {
@@ -101,16 +105,16 @@ const AlbumDetails = () => {
                 meaning: 0.5 + Math.random() * 4.5,
                 personalOpinion: 0.5 + Math.random() * 4.5
             }
+            // Assign stars object to the review object using the song ID as key.
             review[id] = stars
         })
-        console.log('####################### REVIEW #######################', review)
         const result = await (await fetch('http://localhost:3001/saveReview', {
             mode: 'cors',
             method: 'post',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(review)
         })).json();
-        console.log('Result from Server', result)
+        // Update the state of album details.
         setAlbumDetails([...albumDetails])
     }
 

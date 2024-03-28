@@ -68,6 +68,11 @@ const albumSearch = async (searchString) => {
     }
 };
 
+/**
+ * Processes the search result for albums.
+ * @param {Object} result - The search result object containing albums data.
+ * @returns {Array<Object>} - An array of processed album objects for the response.
+ */
 const processAlbumSearch = (result) => {
     const { albums: { items = [] } = {} } = result; // Destructure the albums' items from the search result with default value to prevent errors while iterating over an array.
     // Map and transform album data for the response.
@@ -120,11 +125,16 @@ const saveReview = async (review) => {
         await reviews.insert(review)
         return { saved: true }; // Return the retrieved album details as data.
     } catch (error) {
-        console.log('############### ERROR #############', error)
         return { saved: false };
     }
 }
-
+/**
+ * Retrieves reviews for a given album and updates the review object with aggregated data.
+ * @async
+ * @param {string} albumId - The ID of the album for which reviews are to be retrieved.
+ * @param {Object} rv - The review object to be updated.
+ * @returns {Promise<Object>} The updated review object.
+ */
 const getAlbumReviews = async (albumId, rv) => {
     const docs = await reviews.find({ albumId: albumId })
     if (docs.length) {
@@ -136,7 +146,6 @@ const getAlbumReviews = async (albumId, rv) => {
                     rv[song].instrumentals += (doc[song].instrumentals || 0) / docs.length
                     rv[song].meaning += (doc[song].meaning || 0) / docs.length
                     rv[song].personalOpinion += (doc[song].personalOpinion || 0) / docs.length
-                    console.log('***** JSON STRINGIFY RV[SONG] *****', JSON.stringify(rv[song]))
                 } else {
                     console.log('Song not found', song)
                 }
@@ -197,6 +206,12 @@ app.get('/album/:id', async (request, response) => {
     response.send(albumDetails);
 });
 
+/*
+This endpoint retrieves public reviews for a specific album identified by its ID. 
+It first extracts the album ID from the request parameters, then fetches album details 
+and initializes an object to store review ratings for different aspects of each item in the album. 
+Finally, it sends the album reviews along with the initialized rating object as a response.
+*/
 app.get('/PublicReviews/:id', async (request, response) => {
     const albumId = request.params.id;  // Extract the album ID from the request parameters.
     const albumDetails = await getAlbumDetails(albumId);
@@ -215,6 +230,11 @@ app.get('/PublicReviews/:id', async (request, response) => {
     response.send(await getAlbumReviews(albumId, rv));
 })
 
+/*
+This endpoint receives a review object in the request body and saves it. 
+It logs the received review for debugging purposes, then proceeds to save the review using the 'saveReview' function. 
+After saving the review, it logs the result and sends it as a response.
+*/
 app.post('/saveReview', async (request, response) => {
     const review = request.body
     console.log('/saveReview/saveReview/saveReview/saveReview/saveReview', review)
