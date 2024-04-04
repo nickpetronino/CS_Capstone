@@ -2,24 +2,30 @@ import { useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import AlbumList from "./AlbumList";
 
+/**
+ * React component representing a search bar for albums.
+ * @component
+ * @returns {JSX.Element} SearchBar component JSX
+ */
 export default function SearchBar() {
-  const [searchString, setSearchString] = useState()
+  const [searchString, setSearchString] = useState() // Store search string state.
   const [albums, setAlbums] = useState()
   console.log('Default')
 
+  // Handles the search functionality when the form is submitted.
   const search = async (e) => {
     e.preventDefault()
-    console.log("Searching for blah");
-    const request = { searchString }
+    const request = { searchString } // Give the request object the search string
     const result = await (await fetch('http://localhost:3001/search', {
         mode: 'cors',
         method: 'post',
         headers: {'Content-Type' : 'application/json'},
         body: JSON.stringify(request)
     })).json();
-    console.log("Result: " , result)
-    setAlbums(result)
+    setAlbums(result) // Update the albumList state with the search results
 }
+  
+  // Render the SearchBar component JSX
   return (
     <Container className="mt-5" style={{
       marginTop: "calc(50vh - 10px)"
