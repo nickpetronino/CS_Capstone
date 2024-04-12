@@ -8,7 +8,7 @@ import AlbumList from "./AlbumList";
  * @returns {JSX.Element} SearchBar component JSX
  */
 function SearchBar() {
-  const [searchString, setSearchString] = useState() // Store search string state.
+  const [searchString, setSearchString] = useState('') // Store search string state.
   const [albums, setAlbums] = useState()
   console.log('Default')
 
