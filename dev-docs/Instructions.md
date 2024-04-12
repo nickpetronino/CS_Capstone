@@ -51,13 +51,6 @@ cd Nicholas-Petronino
 - Lastly, to start the express server run:
   ```bash npm start```
 
-# Addtional Information
-
-## Port Numbers:
-
--The client runs here ```http://localhost:3000```
-
--The server runs here ```http://localhost:3001``` To get the status of the server, one can navigate to ```http://localhost:3001/status```
 
 # Generating JSDOCS
 
@@ -102,3 +95,11 @@ To run automated tests for the server-side code, follow these steps:
 ```npm test```
 
 5. Jest will execute the tests specified in your server-side code, and the results will be displayed in the terminal. A coverage report is available in the `/coverage` folder under **index.html**
+
+# Addtional Information
+
+## Port Numbers:
+
+-The client runs here ```http://localhost:3000```
+
+-The server runs here ```http://localhost:3001``` To get the status of the server, one can navigate to ```http://localhost:3001/status```
