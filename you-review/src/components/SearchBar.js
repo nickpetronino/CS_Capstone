@@ -41,7 +41,7 @@ export default function SearchBar() {
               className="me-2 rounded-pill"
               aria-label="Search"
             />
-            <Button type="submit" className="rounded-pill" variant="outline-primary">
+            <Button disabled={!searchString.trim()} type="submit" className="rounded-pill" variant="outline-primary">
               Search
             </Button>
           </Form>
