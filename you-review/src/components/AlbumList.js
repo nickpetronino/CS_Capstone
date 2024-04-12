@@ -3,7 +3,14 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Badge from 'react-bootstrap/Badge';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-
+/**
+ * AlbumList component displays a list of albums with basic information.
+ * Each album item is clickable and navigates to the corresponding album details page.
+ *
+ * @component
+ * @param {Array} props.albums - An array of album objects to be displayed.
+ * @returns {JSX.Element} JSX.Element
+ */
 export default function AlbumList(props) {
     const { albums = [] } = props
 
