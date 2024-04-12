@@ -138,6 +138,7 @@ const saveReview = async (review) => {
 const getAlbumReviews = async (albumId, rv) => {
     const docs = await reviews.find({ albumId: albumId })
     if (docs.length) {
+        rv.reviewCount = docs.length
         docs.forEach(doc => {
             Object.keys(doc).forEach(song => {
                 if (rv[song]) {

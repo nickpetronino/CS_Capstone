@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import ReactStars from 'react-rating-star-with-type'
 import AppContext from '../AppContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { isDisabled } from '@testing-library/user-event/dist/utils';
 
 /**
  * Functional component for displaying album details and managing reviews.
@@ -73,8 +74,10 @@ const AlbumDetails = () => {
                 setLoading(false);
             }
         };
-        fetchPublicReviews();
-    }, [albumDetails]);
+        if (!inEditMode) {
+            fetchPublicReviews();
+        }
+    }, [albumDetails, inEditMode]);
 
 
     /**
@@ -90,43 +93,74 @@ const AlbumDetails = () => {
         setReview({ ...review })
     }
 
+    const revIncomplete = () => {
+        const rv = !Object.keys(review).some(key => {
+            if(key === 'albumId') return false
+            return review[key].lyrics && review[key].vocals && review[key].instrumentals && review[key].meaning && review[key].personalOpinion
+        })
+        console.log("REVINCOMPLETE: ", rv)
+        return rv;
+    }
+
     /**
      * Toggles the review mode for the current album.
      * @returns {Promise<void>} - A promise that resolves once the review mode is toggled.
      */
     const toggleReviewMode = async () => {
-        const review = { albumId: albumList[index].id }
-        albumDetails.map(song => {
-            const { id } = song
-            const stars = {
-                lyrics: 0.5 + Math.random() * 4.5,
-                vocals: 0.5 + Math.random() * 4.5,
-                instrumentals: 0.5 + Math.random() * 4.5,
-                meaning: 0.5 + Math.random() * 4.5,
-                personalOpinion: 0.5 + Math.random() * 4.5
-            }
-            // Assign stars object to the review object using the song ID as key.
-            review[id] = stars
-        })
-        const result = await (await fetch('http://localhost:3001/saveReview', {
-            mode: 'cors',
-            method: 'post',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(review)
-        })).json();
+        // const review = { albumId: albumList[index].id }
+        // albumDetails.map(song => {
+        //     const { id } = song
+        //     const stars = {
+        //         lyrics: 0.5 + Math.random() * 4.5,
+        //         vocals: 0.5 + Math.random() * 4.5,
+        //         instrumentals: 0.5 + Math.random() * 4.5,
+        //         meaning: 0.5 + Math.random() * 4.5,
+        //         personalOpinion: 0.5 + Math.random() * 4.5
+        //     }
+        //     // Assign stars object to the review object using the song ID as key.
+        //     review[id] = stars
+        // })
+        if (inEditMode) {
+            const result = await (await fetch('http://localhost:3001/saveReview', {
+                mode: 'cors',
+                method: 'post',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(review)
+            })).json();
+            setEditMode(false)
+        } else {
+            setEditMode(true)
+            const newReview = {albumId: albumList[index].id}
+            Object.keys(review).forEach(songKey => {
+                newReview[songKey] = {
+                    lyics: 0,
+                    vocals: 0,
+                    instrumentals: 0,
+                    meaning: 0,
+                    personalOpinion: 0
+                }
+            })
+            setReview(newReview);
+        }
         // Update the state of album details.
-        setAlbumDetails([...albumDetails])
+        // setAlbumDetails([...albumDetails])
     }
+
+    const saveDisabled = revIncomplete();
 
     return (
         <div>
             <div style={{ position: 'absolute', top: 10, right: '17.33%' }}>
-                <Button type="button" id="toggleButton" onClick={toggleReviewMode}>Create Review</Button>
+                {!inEditMode && <Button type="button" id="toggleButton" variant='light' onClick={toggleReviewMode}>Create Review</Button>}
+                {inEditMode && <Button type="button" style={{marginRight: 10}} variant="outline-danger" id="toggleButton" onClick={() => { setEditMode(false) }}>Cancel Review</Button>}
+                {inEditMode && <Button disabled={saveDisabled} type="button" id="toggleButton" variant='success' onClick={toggleReviewMode}> Save Review</Button>}
+
             </div>
             <div style={{ margin: '0 auto', width: '83%', paddingLeft: '8.33%', paddingRight: '8.33%' }}>
                 <div style={{ paddingLeft: '1%', paddingTop: '1%', paddingBottom: '1%', display: 'flex', alignItems: 'center' }}>
                     <img src={album.images} height='250px' width='250px' />
                     <h1 style={{ marginLeft: '20px' }}>Album: {album.name}</h1>
+                    {/* {review.reviewCount ? <p3 style={{ marginLeft: '20px' }}>({review.reviewCount} review{review.reviewCount === 1 ? '' : 's'})</p3> : null} */}
                 </div>
             </div>
 
@@ -152,7 +186,7 @@ const AlbumDetails = () => {
                                     <ReactStars
                                         onChange={onChange(track.id, 'lyrics')}
                                         value={review[track.id]?.lyrics}
-                                        isEdit={true}
+                                        isEdit={inEditMode ? true : false}
                                         isHalf={true}
                                     />
                                 </td>
@@ -160,7 +194,7 @@ const AlbumDetails = () => {
                                     <ReactStars
                                         onChange={onChange(track.id, 'vocals')}
                                         value={review[track.id]?.vocals}
-                                        isEdit={true}
+                                        isEdit={inEditMode ? true : false}
                                         isHalf={true}
                                     />
                                 </td>
@@ -168,7 +202,7 @@ const AlbumDetails = () => {
                                     <ReactStars
                                         onChange={onChange(track.id, 'instrumentals')}
                                         value={review[track.id]?.instrumentals}
-                                        isEdit={true}
+                                        isEdit={inEditMode ? true : false}
                                         isHalf={true}
                                     />
                                 </td>
@@ -176,7 +210,7 @@ const AlbumDetails = () => {
                                     <ReactStars
                                         onChange={onChange(track.id, 'meaning')}
                                         value={review[track.id]?.meaning}
-                                        isEdit={true}
+                                        isEdit={inEditMode ? true : false}
                                         isHalf={true}
                                     />
                                 </td>
@@ -184,7 +218,7 @@ const AlbumDetails = () => {
                                     <ReactStars
                                         onChange={onChange(track.id, 'personalOpinion')}
                                         value={review[track.id]?.personalOpinion}
-                                        isEdit={true}
+                                        isEdit={inEditMode ? true : false}
                                         isHalf={true}
                                     />
                                 </td>
