@@ -11,7 +11,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
  * @param {Array} props.albums - An array of album objects to be displayed.
  * @returns {JSX.Element} JSX.Element
  */
-export default function AlbumList(props) {
+function AlbumList(props) {
     const { albums = [] } = props
 
     return (
@@ -32,6 +32,6 @@ export default function AlbumList(props) {
             
         </ListGroup>
     )
-
-
 }
+
+export default AlbumList;

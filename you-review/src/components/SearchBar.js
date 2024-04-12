@@ -3,11 +3,11 @@ import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import AlbumList from "./AlbumList";
 
 /**
- * React component representing a search bar for albums.
+ * React component representing a search bar for albums. Search bar will not allow users to click search unless a non-blank, non-whitespace input is entered.
  * @component
  * @returns {JSX.Element} SearchBar component JSX
  */
-export default function SearchBar() {
+function SearchBar() {
   const [searchString, setSearchString] = useState() // Store search string state.
   const [albums, setAlbums] = useState()
   console.log('Default')
@@ -51,3 +51,5 @@ export default function SearchBar() {
     </Container>
   );
 }
+
+export default SearchBar;
