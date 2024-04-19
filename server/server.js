@@ -11,9 +11,10 @@ let token; // Variable to store the Spotify API access token globally.
 
 
 /**
- * Gets the Spotify API Authroization Token.
+ * Retrieves an access token from the Spotify API using client credentials authentication.
+ * Sets the global variable 'token' with the retrieved access token.
  * 
- * @async
+ * @returns {Promise<Object>} A promise that resolves with an object containing the access token and related information.
  */
 async function getToken() {
     const response = await fetch('https://accounts.spotify.com/api/token', {
@@ -26,25 +27,26 @@ async function getToken() {
             'Authorization': 'Basic ' + (Buffer.from(clientID + ':' + clientSecret).toString('base64')),
         },
     });
-    const rv = await response.json();
-    token = rv.access_token; // Set the obtained access token for future API requests.
+    const rv = await response.json()
+    token = rv.access_token //Sets Global Token
+    return rv
 }
 
-// Invoke the function to fetch and set the Spotify API access token.
 getToken()
 
 
 /**
- * Queries the Spotify API for the User's search input. 
- * This function sends a GET request to the Spotify API's search endpoint, querying for albums based on the user-inputted search string.
- * @param {string} searchString - The user-inputted search string for albums.
- * @returns {Promise<Object>} - A promise that resolves to the search results containing album information.
- * @throws {Error} - If there is an error fetching the search results.
- * @description
- * This asynchronous function is responsible for initiating a search for albums on the Spotify API based on the provided user-inputted search string. It sends a GET request to the search endpoint with the user's query, including the Spotify API access token in the request headers for authentication. The function returns a promise that resolves to the search results containing information about albums matching the search criteria. In case of an error during the request, the error is caught, logged, and rethrown for the caller to handle.
+ * Searches for albums on the Spotify API based on a provided search string.
+ * 
+ * This function sends a request to the Spotify API to search for albums matching the provided search string.
+ * If the search is successful, it returns data about the matching albums. If the request fails,
+ * it returns an error message indicating the reason for the failure.
+ * 
+ * @param {string} searchString The search string to query albums on Spotify. Will get uri encoded to be compatable with api call.
+ * @returns {Promise<Object|string>} A promise that resolves with album data if the search is successful, or an error message if the request fails.
  */
 const albumSearch = async (searchString) => {
-    // Options for the search API request.
+    // Construct search options including the bearer token
     const searchOptions = {
         method: 'GET',
         headers: {
@@ -85,23 +87,33 @@ const getAlbumDetails = async (albumId) => {
             Authorization: `Bearer ${token}`,
         },
     };
-    try {
-        // Make a GET request (from detailOptions) to the Spotify API to retrieve album details.
-        const data = await (
-            await fetch(`https://api.spotify.com/v1/albums/${albumId}/tracks`, detailsOptions)).json();
-        return data; // Return the retrieved album details as data.
-    } catch (error) {
-        console.error('Error fetching album details:', error);
+    const response = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(searchString)}&type=album&limit=10`, searchOptions);
+    // Parse the response body as JSON
+    const data = await response.json();
+
+    // Check if the response is not ok (i.e., if there's an error)
+    if (!response.ok) {
+        return data.error.status + " " + data.error.message;
     }
-};
+    return data;
+}
 
 
-// Listens on the specified port.
+/**
+ * Starts the server to listen on the specified port.
+ * 
+ * @param {number} PORT The port number on which the server should listen.
+ * @param {Function} callback The callback function to be executed when the server starts listening.
+ */
 app.listen(PORT, () => {
     console.log("Server Listening on PORT:", PORT);
 });
 
-// Status of the server. Can be checked at localhost:3001/status
+/**
+ * Handles GET requests to the /status endpoint.
+ * 
+ * This endpoint responds with a JSON object containing the server status.
+ */
 app.get('/status', (request, response) => {
     const status = {
         "Status": "Running"
@@ -110,18 +122,30 @@ app.get('/status', (request, response) => {
     response.send(status);
 });
 
-/* /search endpoint:
-This route handler is responsible for handling POST requests to the '/search' endpoint.
-It extracts user input from the request body, performs an asynchronous search using the `albumSearch` function, and transforms the search results to provide a structured response.
-The response includes album details such as ID, name, total tracks, release date (year only), artists, and the album cover URL (for use displaying cover art).
-The transformed album data is sent as a JSON response using the Express `response.send` method.
-*/
+/**
+ * Handles POST requests to the /search endpoint.
+ * 
+ * This endpoint processes a search request for albums based on user input.
+ * It sends a request to the Spotify API to search for albums matching the user input.
+ * Upon receiving the response from the Spotify API, it extracts relevant information
+ * from the response data, including album ID, name, total tracks, and artists' names.
+ * It then transforms this extracted data into a simplified format and sends it back to the client.
+ * 
+ * The properties extracted from each album item in the response include:
+ * - id: The Spotify ID of the album.
+ * - name: The name of the album.
+ * - total_tracks: The total number of tracks in the album.
+ * - artists: A comma-separated string containing the names of the artists associated with the album.
+ * 
+ * The simplified response JSON consists of an array of objects, where each object represents an album.
+ * Each album object contains the extracted properties mentioned above.
+ */
 app.post('/search', async (request, response) => {
     const userInput = request.body.searchString;    // Extract the user input from the request body.
     const result = await albumSearch(userInput);
     const { albums: { items = [] } = {} } = result; // Destructure the albums' items from the search result with default value to prevent errors while iterating over an array.
     // Map and transform album data for the response.
-    const rv = items.map(({ id, name, total_tracks, release_date, artists, images }) => {
+    const rv = result.albums.items.map(({ id, name, total_tracks, release_date, artists, images }) => {
         return {
             id,
             name,
@@ -144,4 +168,8 @@ app.get('/album/:id', async (request, response) => {
     const albumId = request.params.id;  // Extract the album ID from the request parameters.
     const albumDetails = await getAlbumDetails(albumId);
     response.send(albumDetails);
+
 });
+
+
+module.exports = { app, getToken, albumSearch };

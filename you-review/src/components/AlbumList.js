@@ -2,18 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Badge from 'react-bootstrap/Badge';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 /**
  * AlbumList component displays a list of albums with basic information.
  * Each album item is clickable and navigates to the corresponding album details page.
  *
  * @component
- * @param {Object} props - Component properties.
  * @param {Array} props.albums - An array of album objects to be displayed.
  * @returns {JSX.Element} JSX.Element
  */
-export default function AlbumList(props) {
-    const { albums = [] } = props;
+function AlbumList(props) {
+    const { albums = [] } = props
 
     return (
         <ListGroup as="ol">
@@ -36,5 +36,7 @@ export default function AlbumList(props) {
                 </ListGroup.Item>
             ))}
         </ListGroup>
-    );
+    )
 }
+
+export default AlbumList;
