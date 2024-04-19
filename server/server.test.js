@@ -1,5 +1,5 @@
 const request = require('supertest');
-const { app, albumSearch, getToken } = require('./server');
+const { app, albumSearch, getToken, getAlbumDetails } = require('./server');
 
 describe('GET /status tests', () => {
     it('responds with status 200', async () => {
@@ -54,11 +54,47 @@ describe('albumSearch tests ', () => {
   });
 });
 
+
+describe('getAlbumDetails tests', () => {
+    it('should fetch album details successfully', async () => {
+        const albumId = '6ZG5lRT77aJ3btmArcykra';
+    
+        const response = await getAlbumDetails(albumId);
+    
+        expect(response).toBeDefined();
+        expect(response.error).toBeUndefined();
+    
+        expect(response).toHaveProperty('href');
+        expect(response).toHaveProperty('items');
+        expect(Array.isArray(response.items)).toBe(true);
+        expect(response).toHaveProperty('total');
+        expect(response.total).toBe(10);
+        
+        
+        response.items.forEach(item => {
+            expect(item).toHaveProperty('artists');
+            expect(Array.isArray(item.artists)).toBe(true);
+            expect(item).toHaveProperty('duration_ms');
+            expect(typeof item.duration_ms).toBe('number');
+            expect(item).toHaveProperty('name');
+        });
+    });
+
+    it('should handle errors gracefully', async () => {
+        const invalidAlbumId = 'invalidAlbumId'; 
+
+        const response = await getAlbumDetails(invalidAlbumId);
+
+        expect(response).toBeDefined();
+        expect(response).toBe("400 invalid id"); 
+    });
+});
+
+
 describe('POST /search tests', () => {
     it('should return albums matching the search string from Spotify API', async () => {
         const searchString = 'parachutes';
 
-        // Send a mock request to the /search route
         const res = await request(app)
             .post('/search')
             .send({ searchString });
@@ -66,9 +102,39 @@ describe('POST /search tests', () => {
         expect(res.status).toBe(200);
         expect(res.body).toBeDefined();
         expect(res.body.length).toBeGreaterThan(0);
-        expect(res.body[0]).toHaveProperty('id');
-        expect(res.body[0]).toHaveProperty('name');
-        expect(res.body[0]).toHaveProperty('total_tracks');
-        expect(res.body[0]).toHaveProperty('artists');
+
+
+        res.body.forEach(album => {
+            expect(album).toHaveProperty('id');
+            expect(album).toHaveProperty('name');
+            expect(album).toHaveProperty('total_tracks');
+            expect(album).toHaveProperty('release_date');
+            expect(album).toHaveProperty('artists');
+            expect(album).toHaveProperty('images');
+        });
+    });
+
+    it('should still return closes match', async () => {
+        const searchString = ' THERESINOALBUMWITHTHISNAMEANDIAMSIMPLYHOPINGTHATISTRUE'; 
+
+        const res = await request(app)
+            .post('/search')
+            .send({ searchString });
+
+        expect(res.status).toBe(200);
+        expect(res.body).toBeDefined(); // Spotify will always return it "closest" matches.
+    });
+});
+
+describe('GET /album/:id endpoint tests', () => {
+    it('should return album details for a valid album ID', async () => {
+        const validAlbumId = '6ZG5lRT77aJ3btmArcykra'; // Replace with a valid album ID
+
+        const response = await request(app)
+            .get(`/album/${validAlbumId}`);
+
+        expect(response.status).toBe(200);
+        expect(response.body).toBeDefined();
+        // Add more assertions here to validate the structure and content of the response
     });
 });

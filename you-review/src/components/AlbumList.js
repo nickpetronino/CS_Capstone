@@ -17,25 +17,28 @@ function AlbumList(props) {
 
     return (
         <ListGroup as="ol">
-            {albums.map((album, index) => (
-                <ListGroup.Item
-                    as="li"
-                    className="d-flex justify-content-between align-items-start"
-                >
-                    <Link to={`album/${index}`}>
+    {albums.map((album, index) => (
+        <Link to={`album/${index}`} className="list-group-item-action">
+            <ListGroup.Item
+                as="li"
+                className="d-flex justify-content-between align-items-start"
+            >
+                <div>
                     <img src={album.images} height='100px' width='100px'/>
-                    </Link>
-                    <div className="ms-2 me-auto" align="left">
-                        <div className="fw-bold">{album.name}</div>
-                        <div className="fw-normal"> {album.artists} </div>
-                        <div className="fw-light"> {album.release_date} </div>
-                    </div>
-                    <Badge bg="primary" pill>
-                        Tracks: {album.total_tracks}
-                    </Badge>
-                </ListGroup.Item>
-            ))}
-        </ListGroup>
+                </div>
+                <div className="ms-2 me-auto" align="left">
+                    <div className="fw-bold">{album.name}</div>
+                    <div className="fw-normal"> {album.artists} </div>
+                    <div className="fw-light"> {album.release_date} </div>
+                </div>
+                <Badge bg="primary" pill>
+                    Tracks: {album.total_tracks}
+                </Badge>
+            </ListGroup.Item>
+        </Link>
+    ))}
+</ListGroup>
+
     )
 }
 

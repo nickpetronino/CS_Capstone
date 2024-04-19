@@ -15,7 +15,7 @@ import AppContext from "../AppContext";
  */
 function SearchBar() {
   const {albumList, setAlbumList} = useContext(AppContext);  // Access albumList and setAlbumList from AppContext using useContext hook
-  const [searchString, setSearchString] = useState('') // Store search string state.;  // Store search string state.
+  const [searchString, setSearchString] = useState('') // Store search string state.
   console.log('Default')
 
   // Handles the search functionality when the form is submitted.

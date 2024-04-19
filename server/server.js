@@ -140,7 +140,7 @@ app.get('/status', (request, response) => {
 app.post('/search', async (request, response) => {
     const userInput = request.body.searchString;    // Extract the user input from the request body.
     const result = await albumSearch(userInput);
-    const { albums: { items = [] } = {} } = result; // Destructure the albums' items from the search result with default value to prevent errors while iterating over an array.
+    const { albums: { items } } = result; // Destructure the albums' items from the search result with default value to prevent errors while iterating over an array.
     // Map and transform album data for the response.
     const rv = result.albums.items.map(({ id, name, total_tracks, release_date, artists, images }) => {
         return {
@@ -149,7 +149,7 @@ app.post('/search', async (request, response) => {
             total_tracks,
             release_date: release_date.split('-')[0], // Extract only the year from the release date.
             artists: artists.map(artist => artist.name).join(', '), // Concatenate artist and features names.
-            images: (images.length ? images[0].url : null), // Use the first (and only technically) image URL to display album cover, or null if no images are available.
+            images:  images[0].url, // Use the first (and only technically) image URL to display album cover, or null if no images are available.
         };
     });
     response.send(rv); // Send the transformed album data as a JSON response.
@@ -168,4 +168,4 @@ app.get('/album/:id', async (request, response) => {
 });
 
 
-module.exports = { app, getToken, albumSearch };
+module.exports = { app, getToken, albumSearch, getAlbumDetails };
