@@ -17,7 +17,7 @@ function App() {
       <AppContext.Provider value={{ albumList, setAlbumList }}>
         <Navbar bg='dark' data-bs-theme='dark' className="bg-body-tertiary">
           <Container>
-            <Navbar.Brand href="#home">
+            <Navbar.Brand href="/">
               <img
                 alt=""
                 src={logo}

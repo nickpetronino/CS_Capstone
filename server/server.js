@@ -50,22 +50,19 @@ const albumSearch = async (searchString) => {
     const searchOptions = {
         method: 'GET',
         headers: {
-            Authorization: `Bearer ${token}`, // Include the Spotify API access token in the Authorization header.
+            Authorization: `Bearer ${token}`,
         },
     };
+    const response = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(searchString)}&type=album&limit=10`, searchOptions);
+    // Parse the response body as JSON
+    const data = await response.json();
 
-    try {
-        // Make a GET request to the Spotify API to search for albums based on the user-inputted string.
-        const data = await (
-            await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(searchString)}&type=album&limit=10`, searchOptions)
-        ).json();
-
-        return data; // Return the search results containing album information.
-    } catch (error) {
-        console.error('Error fetching access token:', error); // Log an error if fetching search results fails.
-        throw error; // Propagate the error to the caller.
+    // Check if the response is not ok (i.e., if there's an error)
+    if (!response.ok) {
+        return data.error.status + " " + data.error.message;
     }
-};
+    return data;
+}
 
 
 /**
@@ -87,7 +84,7 @@ const getAlbumDetails = async (albumId) => {
             Authorization: `Bearer ${token}`,
         },
     };
-    const response = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(searchString)}&type=album&limit=10`, searchOptions);
+    const response = await fetch(`https://api.spotify.com/v1/albums/${albumId}/tracks`, detailsOptions);
     // Parse the response body as JSON
     const data = await response.json();
 
@@ -168,7 +165,6 @@ app.get('/album/:id', async (request, response) => {
     const albumId = request.params.id;  // Extract the album ID from the request parameters.
     const albumDetails = await getAlbumDetails(albumId);
     response.send(albumDetails);
-
 });
 
 

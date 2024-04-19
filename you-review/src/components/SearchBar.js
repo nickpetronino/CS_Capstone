@@ -28,7 +28,7 @@ function SearchBar() {
         headers: {'Content-Type' : 'application/json'},
         body: JSON.stringify(request)
     })).json();
-    setAlbums(result) // Update the albumList state with the search results
+    setAlbumList(result) // Update the albumList state with the search results
 }
   
   // Render the SearchBar component JSX
