@@ -1,0 +1,15 @@
+# 1.2 As a user, I would like to view an album.
+
+## User Acceptance Test: Normal case
+
+1. **Given** the system is running at localhost:3000.
+2. **When** the user opens the page.
+3. **And** the user clicks on a specific album from the list.
+4. **Then** the user should be directed to a page displaying the details and tracks of the selected album.
+
+## User Acceptance Test: User clicks to the side of an album.
+
+1. **Given** the system is running at localhost:3000.
+2. **When** the user opens the page.
+3. **And** the user clicks to the side of an album. 
+4. **Then** the user should not be redirected.

@@ -1,15 +1,21 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import AlbumList from "./AlbumList";
+import AppContext from "../AppContext";
 
+/**
+ * React component representing a search bar for albums.
+ * @component
+ * @returns {JSX.Element} SearchBar component JSX
+ */
 /**
  * React component representing a search bar for albums. Search bar will not allow users to click search unless a non-blank, non-whitespace input is entered.
  * @component
  * @returns {JSX.Element} SearchBar component JSX
  */
 function SearchBar() {
+  const {albumList, setAlbumList} = useContext(AppContext);  // Access albumList and setAlbumList from AppContext using useContext hook
   const [searchString, setSearchString] = useState('') // Store search string state.
-  const [albums, setAlbums] = useState()
   console.log('Default')
 
   // Handles the search functionality when the form is submitted.
@@ -22,7 +28,7 @@ function SearchBar() {
         headers: {'Content-Type' : 'application/json'},
         body: JSON.stringify(request)
     })).json();
-    setAlbums(result) // Update the albumList state with the search results
+    setAlbumList(result) // Update the albumList state with the search results
 }
   
   // Render the SearchBar component JSX
@@ -47,7 +53,7 @@ function SearchBar() {
           </Form>
         </Col>
       </Row>
-      <AlbumList albums={albums}></AlbumList>
+      <AlbumList albums={albumList}></AlbumList>
     </Container>
   );
 }
