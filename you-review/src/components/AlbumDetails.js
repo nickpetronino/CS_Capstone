@@ -159,7 +159,7 @@ const AlbumDetails = () => {
             <div style={{ margin: '0 auto', width: '83%', paddingLeft: '8.33%', paddingRight: '8.33%' }}>
                 <div style={{ paddingLeft: '1%', paddingTop: '1%', paddingBottom: '1%', display: 'flex', alignItems: 'center' }}>
                     <img src={album.images} height='250px' width='250px' />
-                    <h1 style={{ marginLeft: '20px' }}>Album: {album.name}</h1>
+                    <h1 style={{ marginLeft: '20px' }}>{album.name}</h1>
                     {/* {review.reviewCount ? <p3 style={{ marginLeft: '20px' }}>({review.reviewCount} review{review.reviewCount === 1 ? '' : 's'})</p3> : null} */}
                 </div>
             </div>

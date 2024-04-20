@@ -10,7 +10,7 @@ import AppContext from "../AppContext";
  */
 const SearchBar = () => {
   const {albumList, setAlbumList} = useContext(AppContext);  // Access albumList and setAlbumList from AppContext using useContext hook
-  const [searchString, setSearchString] = useState();  // Store search string state.
+  const [searchString, setSearchString] = useState('') // Store search string state.
   const [noResults, setNoResults] = useState();
 
   // Handles the search functionality when the form is submitted.
@@ -26,8 +26,8 @@ const SearchBar = () => {
     setAlbumList(result);  // Update the albumList state with the search results
     setNoResults(result.length ? false : true)
 }
-
-// Render the SearchBar component JSX
+  
+  // Render the SearchBar component JSX
   return (
     <Container className="mt-5" style={{
       marginTop: "calc(50vh - 10px)"
@@ -43,7 +43,7 @@ const SearchBar = () => {
               className="me-2 rounded-pill"
               aria-label="Search"
             />
-            <Button type="submit" className="rounded-pill" variant="outline-primary">
+            <Button disabled={!searchString.trim()} type="submit" className="rounded-pill" variant="outline-primary">
               Search
             </Button>
           </Form>

@@ -422,4 +422,8 @@ yarn-debug.log*
 yarn-error.log*
 
 /server/coverage
+/server/public
+/server/routes
+/you-review/docs
 /server/docs
+/you-review/.vscode

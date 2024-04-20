@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Badge from 'react-bootstrap/Badge';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 /**
  * AlbumList component displays a list of albums with basic information.
@@ -17,26 +18,29 @@ const AlbumList = (props) => {
 
     return noResults ? <h3>No results found!</h3> : (
         <ListGroup as="ol">
-            {albums.map((album, index) => (
-                <ListGroup.Item
-                    as="li"
-                    className="d-flex justify-content-between align-items-start"
-                >
-                    <Link to={`album/${index}`}>
+    {albums.map((album, index) => (
+        <Link to={`album/${index}`} className="list-group-item-action">
+            <ListGroup.Item
+                as="li"
+                className="d-flex justify-content-between align-items-start"
+            >
+                <div>
                     <img src={album.images} alt={`${album.name} Album Cover`} height='100px' width='100px'/>
-                    </Link>
-                    <div className="ms-2 me-auto" align="left">
-                        <div className="fw-bold">{album.name}</div>
-                        <div className="fw-normal"> {album.artists} </div>
-                        <div className="fw-light"> {album.release_date} </div>
-                    </div>
-                    <Badge bg="primary" pill>
-                        Tracks: {album.total_tracks}
-                    </Badge>
-                </ListGroup.Item>
-            ))}
-        </ListGroup>
-    );
+                </div>
+                <div className="ms-2 me-auto" align="left">
+                    <div className="fw-bold">{album.name}</div>
+                    <div className="fw-normal"> {album.artists} </div>
+                    <div className="fw-light"> {album.release_date} </div>
+                </div>
+                <Badge bg="primary" pill>
+                    Tracks: {album.total_tracks}
+                </Badge>
+            </ListGroup.Item>
+        </Link>
+    ))}
+</ListGroup>
+
+    )
 }
 
 export default  AlbumList
