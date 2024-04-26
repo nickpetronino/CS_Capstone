@@ -429,3 +429,4 @@ yarn-error.log*
 /you-review/.vscode
 /server/database
 server/.prettierrc
+server/database/reviews.nedb
