@@ -26,7 +26,7 @@ const reviews = new nedb({
 /**
  * Retrieves an access token from the Spotify API using client credentials authentication.
  * Sets the global variable 'token' with the retrieved access token.
- *
+ * 
  * @returns {Promise<Object>} A promise that resolves with an object containing the access token and related information.
  */
 async function getToken() {
@@ -87,6 +87,7 @@ app.get('/PublicReviews/:id', async (request, response) => {
 		};
 		rv[id] = stars;
 	});
+	console.log('PUBLIC REVIEWS', rv);
 	response.send(await getAlbumReviews(albumId, rv));
 });
 
@@ -106,11 +107,11 @@ app.listen(PORT, () => {
 
 /**
  * Searches for albums on the Spotify API based on a provided search string.
- *
+ * 
  * This function sends a request to the Spotify API to search for albums matching the provided search string.
  * If the search is successful, it returns data about the matching albums. If the request fails,
  * it returns an error message indicating the reason for the failure.
- *
+ * 
  * @param {string} searchString The search string to query albums on Spotify. Will get uri encoded to be compatable with api call.
  * @returns {Promise<Object|string>} A promise that resolves with album data if the search is successful, or an error message if the request fails.
  */
@@ -138,9 +139,7 @@ const searchForAlbums = async (searchString) => {
  * @returns {Array<Object>} - An array of processed album objects for the response.
  */
 const processAlbumSearch = (result) => {
-	const {
-		albums: { items }
-	} = result;
+	const { albums: { items } } = result;
 	const rv = items.map(({ id, name, total_tracks, release_date, artists, images }) => {
 		return {
 			id,
@@ -226,6 +225,7 @@ const saveReview = async (review, db) => {
 		return { saved: true, review };
 	}
 };
+
 
 // Exported functions
 exports.processAlbumSearch = processAlbumSearch;
