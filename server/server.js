@@ -99,7 +99,6 @@ app.post('/saveReview', async (request, response) => {
 
 // Start the server
 app.listen(PORT, () => {
-	console.log('Server Listening on PORT:', PORT);
 });
 
 // Functions
