@@ -65,7 +65,6 @@ const AlbumDetails = () => {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                 }
                 const review = await response.json();
-                console.log("%%%%%%%%%%%%%%%% REVIEW %%%%%%%%%%%%%%%%%:", review)
                 setReview(review);
             } catch (error) {
                 console.error('Error fetching reviews', error);
@@ -94,11 +93,10 @@ const AlbumDetails = () => {
     }
 
     const revIncomplete = () => {
-        const rv = !Object.keys(review).some(key => {
+        const rv = !Object.keys(review).every(key => {
             if(key === 'albumId') return false
             return review[key].lyrics && review[key].vocals && review[key].instrumentals && review[key].meaning && review[key].personalOpinion
         })
-        console.log("REVINCOMPLETE: ", rv)
         return rv;
     }
 
