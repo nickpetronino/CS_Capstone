@@ -8,27 +8,23 @@ import AppContext from "../AppContext";
  * @component
  * @returns {JSX.Element} SearchBar component JSX
  */
-/**
- * React component representing a search bar for albums. Search bar will not allow users to click search unless a non-blank, non-whitespace input is entered.
- * @component
- * @returns {JSX.Element} SearchBar component JSX
- */
-function SearchBar() {
+const SearchBar = () => {
   const {albumList, setAlbumList} = useContext(AppContext);  // Access albumList and setAlbumList from AppContext using useContext hook
   const [searchString, setSearchString] = useState('') // Store search string state.
-  console.log('Default')
+  const [noResults, setNoResults] = useState();
 
   // Handles the search functionality when the form is submitted.
   const search = async (e) => {
     e.preventDefault()
-    const request = { searchString } // Give the request object the search string
+    const request = { searchString }; // Give the request object the search string
     const result = await (await fetch('http://localhost:3001/search', {
         mode: 'cors',
         method: 'post',
         headers: {'Content-Type' : 'application/json'},
         body: JSON.stringify(request)
     })).json();
-    setAlbumList(result) // Update the albumList state with the search results
+    setAlbumList(result);  // Update the albumList state with the search results
+    setNoResults(result.length ? false : true)
 }
   
   // Render the SearchBar component JSX
@@ -53,9 +49,11 @@ function SearchBar() {
           </Form>
         </Col>
       </Row>
-      <AlbumList albums={albumList}></AlbumList>
+      <AlbumList 
+        albums={albumList} 
+        noResults={noResults}>
+      </AlbumList>
     </Container>
   );
 }
-
-export default SearchBar;
+export default SearchBar

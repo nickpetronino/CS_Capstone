@@ -9,13 +9,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
  * Each album item is clickable and navigates to the corresponding album details page.
  *
  * @component
+ * @param {Object} props - React component properties.
  * @param {Array} props.albums - An array of album objects to be displayed.
  * @returns {JSX.Element} JSX.Element
  */
-function AlbumList(props) {
-    const { albums = [] } = props
+const AlbumList = (props) => {
+    const { albums = [], noResults } = props;
 
-    return (
+    return noResults ? <h3>No results found!</h3> : (
         <ListGroup as="ol">
     {albums.map((album, index) => (
         <Link to={`album/${index}`} className="list-group-item-action">
@@ -24,7 +25,7 @@ function AlbumList(props) {
                 className="d-flex justify-content-between align-items-start"
             >
                 <div>
-                    <img src={album.images} height='100px' width='100px'/>
+                    <img src={album.images} alt={`${album.name} Album Cover`} height='100px' width='100px'/>
                 </div>
                 <div className="ms-2 me-auto" align="left">
                     <div className="fw-bold">{album.name}</div>
@@ -42,4 +43,4 @@ function AlbumList(props) {
     )
 }
 
-export default AlbumList;
+export default  AlbumList
